@@ -1,0 +1,8 @@
+{
+  "name": "CampusFind",
+  "description": "Smart Lost & Found for University Campus powered by Gemini AI and Google Maps.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ]
+}
