@@ -1,4 +1,4 @@
-# CampusFind 📍
+# CampusFind
 
 **CampusFind** is a modern, community-driven platform designed to help students and faculty recover lost belongings and return found items effortlessly. By combining real-time location mapping with AI-driven categorization, we streamline the process of connecting owners with their lost assets.
 
