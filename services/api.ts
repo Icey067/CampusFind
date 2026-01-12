@@ -1,6 +1,6 @@
 import { LostFoundItem } from '../types';
 
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = `http://${window.location.hostname}:3001/api`;
 
 export const fetchItems = async (): Promise<LostFoundItem[]> => {
     const response = await fetch(`${API_BASE_URL}/items`);

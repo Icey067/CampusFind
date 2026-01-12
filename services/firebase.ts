@@ -1,15 +1,10 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup, User as FirebaseUser } from 'firebase/auth';
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, where, Timestamp } from 'firebase/firestore';
-import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import { getFirestore, collection, addDoc, getDocs, query, orderBy } from 'firebase/firestore';
 import { LostFoundItem, User } from '../types';
 import { MOCK_ITEMS } from '../constants';
 
 // --- Configuration ---
-// Note: In this environment, we may not have real keys. 
-// This code is structured to work with real keys if provided, 
-// otherwise it falls back to a Mock Service for demonstration.
-
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "mock-key",
   authDomain: "campusfind-7a340.firebaseapp.com",
@@ -25,13 +20,11 @@ const isMock = import.meta.env.VITE_FIREBASE_API_KEY === undefined || import.met
 // --- Real Firebase Instances ---
 let auth: any;
 let db: any;
-let storage: any;
 
 if (!isMock) {
   const app = initializeApp(firebaseConfig);
   auth = getAuth(app);
   db = getFirestore(app);
-  storage = getStorage(app);
 }
 
 // --- Service Layer ---
@@ -59,6 +52,22 @@ export const loginWithGoogle = async (): Promise<User> => {
     email: user.email,
     photoURL: user.photoURL
   };
+};
+
+export const onAuthChange = (callback: (user: User | null) => void) => {
+  if (isMock) return;
+  return onAuthStateChanged(auth, (user) => {
+    if (user) {
+      callback({
+        uid: user.uid,
+        displayName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL
+      });
+    } else {
+      callback(null);
+    }
+  });
 };
 
 // In-memory store for the session
@@ -90,11 +99,7 @@ export const createItem = async (item: Omit<LostFoundItem, 'id'>): Promise<LostF
 };
 
 export const uploadImage = async (base64Data: string): Promise<string> => {
-  if (isMock) {
-    return new Promise((resolve) => setTimeout(() => resolve(base64Data), 500)); // Just return base64 as URL for mock
-  }
-
-  const storageRef = ref(storage, `images/${Date.now()}.jpg`);
-  await uploadString(storageRef, base64Data, 'data_url');
-  return getDownloadURL(storageRef);
+  // Free strategy: Store Base64 directly in Firestore record.
+  // This avoids Firebase Storage billing limits entirely.
+  return base64Data;
 };

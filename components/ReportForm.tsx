@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Camera, ChevronRight, Loader2, MapPin, Upload, X } from 'lucide-react';
 import { analyzeImageWithGemini } from '../services/geminiService';
-import { uploadImage } from '../services/api';
+import { uploadImage } from '../services/firebase';
 import MapContainer from './MapContainer';
 import { AIAnalysisResult, GeoLocation, ItemType, LostFoundItem } from '../types';
 import { CATEGORIES } from '../constants';

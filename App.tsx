@@ -4,8 +4,7 @@ import Dashboard from './components/Dashboard';
 import ReportForm from './components/ReportForm';
 import MapContainer from './components/MapContainer';
 import { LostFoundItem, User } from './types';
-import { loginWithGoogle } from './services/firebase';
-import { createItem } from './services/api';
+import { loginWithGoogle, onAuthChange, createItem } from './services/firebase';
 import { X } from 'lucide-react';
 
 // Use a simple view-based router since we are in a single-file environment primarily
@@ -15,6 +14,15 @@ const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [currentView, setCurrentView] = useState('dashboard'); // dashboard, report
   const [selectedItem, setSelectedItem] = useState<LostFoundItem | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthChange((u) => {
+      setUser(u);
+    });
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, []);
 
   const handleLogin = async () => {
     try {

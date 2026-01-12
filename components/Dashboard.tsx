@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchItems } from '../services/api';
+import { fetchItems } from '../services/firebase';
 import { findSmartMatches } from '../services/geminiService';
 import { LostFoundItem, User } from '../types';
 import ItemCard from './ItemCard';
