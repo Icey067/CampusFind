@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 import ReportForm from './components/ReportForm';
@@ -106,6 +106,8 @@ const App: React.FC = () => {
               <div className="relative h-64 bg-gray-100">
                 <img src={selectedItem.imageUrl} alt={selectedItem.title} className="w-full h-full object-cover" />
                 <button
+                  type="button"
+                  aria-label="Close item details"
                   onClick={() => setSelectedItem(null)}
                   className="absolute top-4 right-4 bg-black/20 hover:bg-black/40 backdrop-blur text-white p-2 rounded-full transition"
                 >

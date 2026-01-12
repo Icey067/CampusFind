@@ -4,6 +4,8 @@
     "experimentalDecorators": true,
     "useDefineForClassFields": false,
     "module": "ESNext",
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "lib": [
       "ES2022",
       "DOM",
