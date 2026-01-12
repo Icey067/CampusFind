@@ -2,10 +2,6 @@
 
 **CampusFind** is a modern, community-driven platform designed to help students and faculty recover lost belongings and return found items effortlessly. By combining real-time location mapping with AI-driven categorization, we streamline the process of connecting owners with their lost assets.
 
-<div align="center">
-  <img width="800" alt="CampusFind Banner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
-
 ## ✨ Key Features
 
 - **AI-Powered Item Analysis**: Simply snap a photo. **Google Gemini** automatically detects the object, suggests a descriptive title, and categorizes it to save you time.
