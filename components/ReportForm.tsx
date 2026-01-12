@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Camera, ChevronRight, Loader2, MapPin, Upload, X } from 'lucide-react';
 import { analyzeImageWithGemini } from '../services/geminiService';
-import { uploadImage } from '../services/firebase';
+import { uploadImage } from '../services/api';
 import MapContainer from './MapContainer';
 import { AIAnalysisResult, GeoLocation, ItemType, LostFoundItem } from '../types';
 import { CATEGORIES } from '../constants';
@@ -210,8 +210,8 @@ const ReportForm: React.FC<ReportFormProps> = ({ userId, onSubmit, onCancel }) =
                       key={cat}
                       onClick={() => setCategory(cat)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${category === cat
-                          ? 'bg-campus-600 text-white border-campus-600 shadow-md'
-                          : 'bg-white text-gray-600 border-gray-200 hover:border-campus-400'
+                        ? 'bg-campus-600 text-white border-campus-600 shadow-md'
+                        : 'bg-white text-gray-600 border-gray-200 hover:border-campus-400'
                         }`}
                     >
                       {cat}

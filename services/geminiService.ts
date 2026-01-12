@@ -2,9 +2,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { AIAnalysisResult } from '../types';
 
 // Initialize Gemini
-// NOTE: process.env.API_KEY is assumed to be present as per instructions.
-// If running locally without env, this will throw. We handle errors gracefully in components.
-const apiKey = process.env.API_KEY || "mock-api-key"; 
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 const ai = new GoogleGenAI({ apiKey });
 
 /**
@@ -53,7 +51,7 @@ export const analyzeImageWithGemini = async (base64Data: string): Promise<AIAnal
             title: { type: Type.STRING },
             description: { type: Type.STRING },
             category: { type: Type.STRING },
-            keywords: { 
+            keywords: {
               type: Type.ARRAY,
               items: { type: Type.STRING }
             }
@@ -64,7 +62,7 @@ export const analyzeImageWithGemini = async (base64Data: string): Promise<AIAnal
 
     const text = response.text;
     if (!text) throw new Error("No response from AI");
-    
+
     return JSON.parse(text) as AIAnalysisResult;
 
   } catch (error) {
@@ -85,8 +83,8 @@ export const analyzeImageWithGemini = async (base64Data: string): Promise<AIAnal
  */
 export const findSmartMatches = async (newItem: AIAnalysisResult, existingItems: any[]): Promise<string[]> => {
   // Simple filter logic first
-  const candidates = existingItems.filter(item => 
-    item.category === newItem.category || 
+  const candidates = existingItems.filter(item =>
+    item.category === newItem.category ||
     newItem.keywords.some(k => item.description.toLowerCase().includes(k.toLowerCase()))
   ).slice(0, 10); // Take top 10 candidates
 

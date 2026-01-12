@@ -11,15 +11,16 @@ import { MOCK_ITEMS } from '../constants';
 // otherwise it falls back to a Mock Service for demonstration.
 
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY || "mock-key",
-  authDomain: "campus-lost-found.firebaseapp.com",
-  projectId: "campus-lost-found",
-  storageBucket: "campus-lost-found.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "mock-key",
+  authDomain: "campusfind-7a340.firebaseapp.com",
+  projectId: "campusfind-7a340",
+  storageBucket: "campusfind-7a340.firebasestorage.app",
+  messagingSenderId: "803926365844",
+  appId: "1:803926365844:web:11d1453f01f020346e8681",
+  measurementId: "G-MW1KQVG6FD"
 };
 
-const isMock = process.env.FIREBASE_API_KEY === undefined;
+const isMock = import.meta.env.VITE_FIREBASE_API_KEY === undefined || import.meta.env.VITE_FIREBASE_API_KEY === 'your_firebase_key';
 
 // --- Real Firebase Instances ---
 let auth: any;
@@ -66,7 +67,7 @@ let mockStore: LostFoundItem[] = [...MOCK_ITEMS];
 export const fetchItems = async (): Promise<LostFoundItem[]> => {
   if (isMock) {
     return new Promise((resolve) => {
-      setTimeout(() => resolve([...mockStore].sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime())), 500);
+      setTimeout(() => resolve([...mockStore].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())), 500);
     });
   }
 
