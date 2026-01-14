@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
-import { getFirestore, collection, addDoc, getDocs, query, orderBy } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import { LostFoundItem, User } from '../types';
 import { MOCK_ITEMS } from '../constants';
 
@@ -96,6 +96,17 @@ export const createItem = async (item: Omit<LostFoundItem, 'id'>): Promise<LostF
 
   const docRef = await addDoc(collection(db, "items"), item);
   return { id: docRef.id, ...item };
+};
+
+export const deleteItem = async (itemId: string): Promise<void> => {
+  if (isMock) {
+    return new Promise((resolve) => {
+      mockStore = mockStore.filter(item => item.id !== itemId);
+      setTimeout(() => resolve(), 500);
+    });
+  }
+
+  await deleteDoc(doc(db, "items", itemId));
 };
 
 export const uploadImage = async (base64Data: string): Promise<string> => {

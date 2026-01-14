@@ -4,8 +4,8 @@ import Dashboard from './components/Dashboard';
 import ReportForm from './components/ReportForm';
 import MapContainer from './components/MapContainer';
 import { LostFoundItem, User } from './types';
-import { loginWithGoogle, onAuthChange, createItem } from './services/firebase';
-import { X } from 'lucide-react';
+import { loginWithGoogle, onAuthChange, createItem, deleteItem } from './services/firebase';
+import { X, Trash2 } from 'lucide-react';
 
 // Use a simple view-based router since we are in a single-file environment primarily
 // and HashRouter was suggested but view-state is often cleaner for modal flows in this context.
@@ -14,6 +14,8 @@ const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [currentView, setCurrentView] = useState('dashboard'); // dashboard, report
   const [selectedItem, setSelectedItem] = useState<LostFoundItem | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthChange((u) => {
@@ -49,6 +51,22 @@ const App: React.FC = () => {
     setCurrentView('dashboard');
   };
 
+  const handleDeleteItem = async (itemId: string) => {
+    if (!window.confirm("Are you sure you want to delete this post?")) return;
+
+    setDeleting(true);
+    try {
+      await deleteItem(itemId);
+      setSelectedItem(null);
+      setRefreshKey(prev => prev + 1);
+    } catch (e) {
+      console.error("Delete failed", e);
+      alert("Failed to delete item.");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
       <Navbar
@@ -64,6 +82,7 @@ const App: React.FC = () => {
           <Dashboard
             onItemClick={setSelectedItem}
             user={user}
+            refreshKey={refreshKey}
           />
         )}
 
@@ -143,6 +162,17 @@ const App: React.FC = () => {
                 <button className="w-full py-3.5 bg-gray-900 text-white rounded-xl font-bold hover:bg-black transition-transform active:scale-[0.98]">
                   Contact {selectedItem.type === 'lost' ? 'Owner' : 'Finder'}
                 </button>
+
+                {user && user.uid === selectedItem.userId && (
+                  <button
+                    onClick={() => handleDeleteItem(selectedItem.id)}
+                    disabled={deleting}
+                    className="w-full mt-3 py-3.5 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition-colors flex items-center justify-center space-x-2"
+                  >
+                    <Trash2 size={18} />
+                    <span>{deleting ? 'Deleting...' : 'Delete My Post'}</span>
+                  </button>
+                )}
               </div>
             </div>
           </div>

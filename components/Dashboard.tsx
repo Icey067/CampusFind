@@ -9,9 +9,10 @@ import { Filter, Loader2, Sparkles } from 'lucide-react';
 interface DashboardProps {
   onItemClick: (item: LostFoundItem) => void;
   user: User | null;
+  refreshKey?: number;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ onItemClick, user }) => {
+const Dashboard: React.FC<DashboardProps> = ({ onItemClick, user, refreshKey }) => {
   const [items, setItems] = useState<LostFoundItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<'all' | 'lost' | 'found'>('all');
@@ -23,7 +24,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onItemClick, user }) => {
 
   useEffect(() => {
     loadItems();
-  }, []);
+  }, [refreshKey]);
 
   const loadItems = async () => {
     setLoading(true);

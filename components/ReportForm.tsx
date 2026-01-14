@@ -143,6 +143,22 @@ const ReportForm: React.FC<ReportFormProps> = ({ userId, onSubmit, onCancel }) =
                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-20 rounded-xl">
                       <span className="text-white font-medium flex items-center"><Camera size={18} className="mr-2" /> Change Photo</span>
                     </div>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setImageFile(null);
+                        setImagePreview(null);
+                        setAnalysis(null);
+                        setTitle('');
+                        setDescription('');
+                        setCategory('Other');
+                      }}
+                      className="absolute top-2 right-2 z-30 bg-white/90 hover:bg-white text-red-500 p-1.5 rounded-full shadow-lg transition-transform hover:scale-110 active:scale-95"
+                      title="Remove image"
+                    >
+                      <X size={16} />
+                    </button>
                   </>
                 ) : (
                   <div className="text-center p-6">
