@@ -33,3 +33,20 @@ export interface AIAnalysisResult {
   category: string;
   keywords: string[];
 }
+export interface Message {
+  id: string;
+  senderId: string;
+  recipientId: string;
+  text: string;
+  timestamp: string;
+  read: boolean;
+  itemId?: string; // Optional reference to the item being discussed
+}
+
+export interface Conversation {
+  id: string;
+  participants: string[];
+  lastMessage?: Message;
+  updatedAt: string;
+  otherUser?: User; // Dynamically populated user info
+}

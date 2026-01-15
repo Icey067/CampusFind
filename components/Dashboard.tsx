@@ -4,15 +4,16 @@ import { findSmartMatches } from '../services/geminiService';
 import { LostFoundItem, User } from '../types';
 import ItemCard from './ItemCard';
 import { CATEGORIES } from '../constants';
-import { Filter, Loader2, Sparkles } from 'lucide-react';
+import { Filter, Loader2, Sparkles, Package } from 'lucide-react';
 
 interface DashboardProps {
   onItemClick: (item: LostFoundItem) => void;
   user: User | null;
   refreshKey?: number;
+  userIdFilter?: string | null;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ onItemClick, user, refreshKey }) => {
+const Dashboard: React.FC<DashboardProps> = ({ onItemClick, user, refreshKey, userIdFilter }) => {
   const [items, setItems] = useState<LostFoundItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<'all' | 'lost' | 'found'>('all');
@@ -41,6 +42,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onItemClick, user, refreshKey }) 
   const filteredItems = items.filter(item => {
     if (filterType !== 'all' && item.type !== filterType) return false;
     if (filterCategory !== 'All' && item.category !== filterCategory) return false;
+    if (userIdFilter && item.userId !== userIdFilter) return false;
     return true;
   });
 
@@ -97,6 +99,25 @@ const Dashboard: React.FC<DashboardProps> = ({ onItemClick, user, refreshKey }) 
           ))}
         </div>
       </div>
+
+      {userIdFilter && (
+        <div className="mb-6 flex items-center justify-between bg-campus-50 border border-campus-100 p-4 rounded-2xl animate-in slide-in-from-top-2">
+          <div className="flex items-center space-x-3">
+            <Package size={20} className="text-campus-600" />
+            <p className="text-sm font-semibold text-campus-900">Viewing your reports only</p>
+          </div>
+          <button
+            onClick={() => {
+              // This is handled by parent, but we can reset internal filters
+              setFilterType('all');
+              setFilterCategory('All');
+            }}
+            className="text-xs font-bold text-campus-600 hover:text-campus-700 underline"
+          >
+            Reset all filters
+          </button>
+        </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center items-center h-64">

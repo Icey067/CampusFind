@@ -3,9 +3,11 @@ import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 import ReportForm from './components/ReportForm';
 import MapContainer from './components/MapContainer';
+import Messenger from './components/Messenger';
+import ProfileModal from './components/ProfileModal';
 import { LostFoundItem, User } from './types';
-import { loginWithGoogle, onAuthChange, createItem, deleteItem } from './services/firebase';
-import { X, Trash2 } from 'lucide-react';
+import { loginWithGoogle, onAuthChange, createItem, deleteItem, getOrCreateConversation } from './services/firebase';
+import { X, Trash2, MessageCircle, Loader2 } from 'lucide-react';
 
 // Use a simple view-based router since we are in a single-file environment primarily
 // and HashRouter was suggested but view-state is often cleaner for modal flows in this context.
@@ -16,6 +18,11 @@ const App: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<LostFoundItem | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [deleting, setDeleting] = useState(false);
+  const [chatLoading, setChatLoading] = useState(false);
+  const [showMessenger, setShowMessenger] = useState(false);
+  const [activeConvoId, setActiveConvoId] = useState<string | undefined>(undefined);
+  const [showProfile, setShowProfile] = useState(false);
+  const [myItemsOnly, setMyItemsOnly] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthChange((u) => {
@@ -67,6 +74,31 @@ const App: React.FC = () => {
     }
   };
 
+  const handleStartChat = async (recipientId: string) => {
+    if (!user) {
+      handleLogin();
+      return;
+    }
+
+    if (user.uid === recipientId) {
+      alert("You can't message yourself.");
+      return;
+    }
+
+    setChatLoading(true);
+    try {
+      const convoId = await getOrCreateConversation([user.uid, recipientId]);
+      setActiveConvoId(convoId);
+      setShowMessenger(true);
+      setSelectedItem(null); // Close the detail modal
+    } catch (e) {
+      console.error("Start chat failed", e);
+      alert("Failed to start chat.");
+    } finally {
+      setChatLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
       <Navbar
@@ -75,6 +107,8 @@ const App: React.FC = () => {
         onLogout={handleLogout}
         currentView={currentView}
         setView={setCurrentView}
+        onOpenMessenger={() => setShowMessenger(true)}
+        onOpenProfile={() => setShowProfile(true)}
       />
 
       <main className="relative">
@@ -83,6 +117,7 @@ const App: React.FC = () => {
             onItemClick={setSelectedItem}
             user={user}
             refreshKey={refreshKey}
+            userIdFilter={myItemsOnly && user ? user.uid : null}
           />
         )}
 
@@ -159,9 +194,20 @@ const App: React.FC = () => {
                   />
                 </div>
 
-                <button className="w-full py-3.5 bg-gray-900 text-white rounded-xl font-bold hover:bg-black transition-transform active:scale-[0.98]">
-                  Contact {selectedItem.type === 'lost' ? 'Owner' : 'Finder'}
-                </button>
+                {(!user || user.uid !== selectedItem.userId) && (
+                  <button
+                    onClick={() => handleStartChat(selectedItem.userId)}
+                    disabled={chatLoading}
+                    className="w-full py-3.5 bg-gray-900 text-white rounded-xl font-bold hover:bg-black transition-transform active:scale-[0.98] flex items-center justify-center space-x-2 disabled:bg-gray-400"
+                  >
+                    {chatLoading ? (
+                      <Loader2 size={20} className="animate-spin" />
+                    ) : (
+                      <MessageCircle size={20} />
+                    )}
+                    <span>{chatLoading ? 'Starting Chat...' : `Contact ${selectedItem.type === 'lost' ? 'Owner' : 'Finder'}`}</span>
+                  </button>
+                )}
 
                 {user && user.uid === selectedItem.userId && (
                   <button
@@ -176,6 +222,27 @@ const App: React.FC = () => {
               </div>
             </div>
           </div>
+        )}
+
+        {showMessenger && user && (
+          <Messenger
+            currentUser={user}
+            onClose={() => setShowMessenger(false)}
+            initialConversationId={activeConvoId}
+          />
+        )}
+
+        {showProfile && user && (
+          <ProfileModal
+            user={user}
+            onClose={() => setShowProfile(false)}
+            onLogout={handleLogout}
+            onUpdateUser={(updates) => setUser({ ...user, ...updates })}
+            onViewMyItems={() => {
+              setMyItemsOnly(true);
+              setCurrentView('dashboard');
+            }}
+          />
         )}
       </main>
     </div>
