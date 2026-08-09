@@ -1,4 +1,4 @@
-# CampusFind 🔍
+# Lumina 🔍
 
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![Firebase](https://img.shields.io/badge/Firebase-Auth%20%26%20Firestore-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com/)
@@ -6,7 +6,7 @@
 [![TomTom](https://img.shields.io/badge/Maps-TomTom%20SDK-df1b12?logo=tomtom&logoColor=white)](https://developer.tomtom.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**CampusFind** is a sophisticated, AI-enhanced platform designed to solve the age-old problem of lost items on university campuses. By merging real-time geolocation with multimodal AI, we provide a seamless bridge between lost belongings and their rightful owners.
+**Lumina** is a sophisticated, AI-enhanced platform designed to solve the age-old problem of lost items on university campuses. By merging real-time geolocation with multimodal AI, we provide a seamless bridge between lost belongings and their rightful owners.
 
 ---
 
